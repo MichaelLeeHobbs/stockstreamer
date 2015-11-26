@@ -17,11 +17,11 @@ This project was generated with the [Angular Full-Stack Generator](https://githu
   * What if we took the basic ideas of this project and tracked FCC members progress in real time?
 
 ### Task
-100. ~~Add favicon.ico, set meta tag description, set title~~
-200. ~~Remove nav bar - I do not see a need for it at this time but will leave the component in place just in case~~
-300. Update footer directive and html - want to make a generic reusable footer for future FCC projects
-400. Add service to pull stock data and provide it to controllers
-500. (US 1-4) Build basic view
+101. ~~Add favicon.ico, set meta tag description, set title~~
+201. ~~Remove nav bar - I do not see a need for it at this time but will leave the component in place just in case~~
+301. Update footer directive and html - want to make a generic reusable footer for future FCC projects
+401. Add service to pull stock data and provide it to controllers
+501. (US 1-4) Build basic view
   1. Need a graph using angularcharts.js - Note: consider D3.js due to hide/show bug with chart.js which angularchart.js uses
   2. Need a nav list with a self remove button for each item - using generated things api
   3. Need an add new input and button - using generated things api
@@ -29,7 +29,7 @@ This project was generated with the [Angular Full-Stack Generator](https://githu
   5. Enable adding/removing stocks in real time
   6. Prevent duplicate entries and ignore case
   
-  Note: Task 500.2 and 500.3 are basically done using the generated things api.
+  Note: Task 501.2 and 501.3 are basically done using the generated things api.
 6. Deploy to Heroku
 
 
