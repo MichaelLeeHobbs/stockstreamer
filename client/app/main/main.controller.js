@@ -34,7 +34,7 @@
     });
 
     this.addThing = function () {
-      self.newThing = self.newThing.toLowerCase();
+      self.newThing = self.newThing.toUpperCase();
       if (isDuplicate(self.newThing, self.awesomeThings, 'name')) {
         self.newThing = '';
         return;
