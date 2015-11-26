@@ -23,7 +23,7 @@ This project was generated with the [Angular Full-Stack Generator](https://githu
   1. Need a graph using angularcharts.js - Note: consider D3.js due to hide/show bug with chart.js which angularchart.js uses
   2. ~~Need a nav list with a self remove button for each item - using generated things api~~
   3. ~~Need an add new input and button - using generated things api~~
-  4. Update or remove the tool tip from existing things list
+  4. ~~Update or remove the tool tip from existing things list~~
   5. ~~Enable adding/removing stocks in real time~~
   6. ~~Prevent duplicate entries and ignore case~~
   
