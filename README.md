@@ -25,7 +25,7 @@ This project was generated with the [Angular Full-Stack Generator](https://githu
   3. ~~Need an add new input and button - using generated things api~~
   4. Update or remove the tool tip from existing things list
   5. ~~Enable adding/removing stocks in real time~~
-  6. Prevent duplicate entries and ignore case
+  6. ~~Prevent duplicate entries and ignore case~~
   
   Note: Task 5.2 and 5.3 are basically done using the generated things api.
 6. Deploy to Heroku

@@ -15,10 +15,16 @@
       return stockGetter.get(symbols);
     }
 
+    function isDuplicate(item, objCollection, key) {
+      if (objCollection.some(ele => ele[key] === item)) {
+        return true;
+      }
+      return false;
+    }
+
     $scope.$watchCollection(angular.bind(this, function (awesomeThings) {
       return self.awesomeThings;
     }), function (newVal, oldVal) {
-      console.log('thing changed');
       getStocks();
     });
 
@@ -28,6 +34,11 @@
     });
 
     this.addThing = function () {
+      self.newThing = self.newThing.toLowerCase();
+      if (isDuplicate(self.newThing, self.awesomeThings, 'name')) {
+        self.newThing = '';
+        return;
+      }
       if (self.newThing === '') {
         return;
       }
