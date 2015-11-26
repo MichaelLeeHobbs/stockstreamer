@@ -4,7 +4,7 @@
   function MainController($scope, $http, socket, stockGetter) {
     var self           = this;
     this.awesomeThings = [];
-    this.stocks        = getStocks();
+    this.stocks        = [];
 
 
     function getStocks() {
@@ -16,21 +16,25 @@
     }
 
     function isDuplicate(item, objCollection, key) {
-      if (objCollection.some(ele => ele[key] === item)) {
-        return true;
-      }
-      return false;
+      return objCollection.some(ele => ele[key] === item);
     }
 
     $scope.$watchCollection(angular.bind(this, function (awesomeThings) {
       return self.awesomeThings;
     }), function (newVal, oldVal) {
-      getStocks();
+
+      if (getStocks)
+      getStocks().then(function (data) {
+        self.stocks = data;
+      });
     });
 
     $http.get('/api/things').then(function (response) {
       self.awesomeThings = response.data;
       socket.syncUpdates('thing', self.awesomeThings);
+      getStocks().then(function (data) {
+        self.stocks = data;
+      });
     });
 
     this.addThing = function () {

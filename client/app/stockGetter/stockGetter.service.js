@@ -1,14 +1,17 @@
 'use strict';
 
 angular.module('publicHtmlApp')
-  .service('stockGetter', function ($http) {
+  .service('stockGetter', function ($http, $q) {
     // AngularJS will instantiate a singleton by calling "new" on this function
 
     return {
       get: function (stockSymbols) {
         console.log(stockSymbols);
         if (stockSymbols.length === 0) {
-          return [];
+          // return a promise the resolves to [] as callers are expecting a promise not an empty []
+          return $q(function(resolve){
+            resolve([]);
+          });
         }
         return $http({
           method: 'GET',
