@@ -5,8 +5,9 @@ angular.module('publicHtmlApp')
     return {
       templateUrl: 'components/footer/footer.html',
       restrict: 'E',
-      link: function (scope, element) {
+      link: function (scope, element, attrs) {
         element.addClass('footer');
+        scope.attrs = attrs;
       }
     };
   });

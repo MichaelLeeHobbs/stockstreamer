@@ -17,7 +17,7 @@ This project was generated with the [Angular Full-Stack Generator](https://githu
 ## Task
 1. ~~Add favicon.ico, set meta tag description, set title~~
 2. ~~Remove nav bar - I do not see a need for it at this time but will leave the component in place just in case~~
-3. Update footer directive and html - want to make a generic reusable footer for future FCC projects
+3. ~~Update footer directive and html - want to make a generic reusable footer for future FCC projects~~
 4. Add service to pull stock data and provide it to controllers
 5. (US 1-4) Build basic view
   1. Need a graph using angularcharts.js - Note: consider D3.js due to hide/show bug with chart.js which angularchart.js uses
