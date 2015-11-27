@@ -4,7 +4,6 @@ angular.module('publicHtmlApp')
   .factory('d3Service', function ($document, $q, $rootScope) {
     // Service logic
     var d = $q.defer();
-
     function onScriptLoad() {
       // Load client in the browser
       $rootScope.$apply(function () { d.resolve(window.d3); });

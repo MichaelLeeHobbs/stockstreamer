@@ -5,7 +5,14 @@
     var self           = this;
     this.awesomeThings = [];
     this.stocks        = [];
+    this.stockData     = [];
 
+    $scope.stockData = [
+      {name: 'Greg', score: 50},
+      {name: 'Ari', score: 96},
+      {name: 'Q', score: 75},
+      {name: 'Loser', score: 48}
+    ];
 
     function getStocks() {
       var symbols = [];
@@ -24,9 +31,9 @@
     }), function (newVal, oldVal) {
 
       if (getStocks)
-      getStocks().then(function (data) {
-        self.stocks = data;
-      });
+        getStocks().then(function (data) {
+          self.stocks = data;
+        });
     });
 
     $http.get('/api/things').then(function (response) {
