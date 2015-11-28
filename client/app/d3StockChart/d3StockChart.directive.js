@@ -73,7 +73,7 @@ angular.module('publicHtmlApp')
               d3.min(cities, function (c) { return d3.min(c.values, function (v) { return v.temperature; }); }),
               d3.max(cities, function (c) { return d3.max(c.values, function (v) { return v.temperature; }); })
             ]);
-            scope.data  = cities;
+            scope.citiesData  = cities;
           });
 
           // Browser onresize event
@@ -88,7 +88,7 @@ angular.module('publicHtmlApp')
             scope.render(scope.data);
           });
           // watch for data changes and re-render
-          scope.$watch('data', function (newVals, oldVals) {
+          scope.$watch('citiesData', function (newVals, oldVals) {
             return scope.render(newVals);
           }, true);
 
