@@ -194,7 +194,6 @@ angular.module('publicHtmlApp')
                 .attr('dy', '3.35em')
                 .text('San Francisco: ' + formatCurrency(d['San Francisco']));
 
-
               bisector
                 .attr('x1', d3.mouse(this)[0])  //<<== change your code here
                 .attr('y1', 0)
@@ -202,16 +201,8 @@ angular.module('publicHtmlApp')
                 .attr('y2', height);
 
 
-              console.log(focus.node().getBBox().width);
               var focusWidth = focus.node().getBBox().width;
               focus.attr('transform', 'translate(' + (d3.mouse(this)[0] + focusWidth / 2) + ',' + d3.mouse(this)[1] + ')');
-              /*
-               focus.select('text').text(
-               'Austin: ' + formatCurrency(d['Austin']) +
-               '  San Francisco: ' + formatCurrency(d['San Francisco']) +
-               '  New York: ' + formatCurrency(d['New York'])
-
-               );*/
             }
           };
         });
