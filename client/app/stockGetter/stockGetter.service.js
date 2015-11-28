@@ -8,7 +8,7 @@ angular.module('publicHtmlApp')
       get: function (stockSymbols) {
         console.log(stockSymbols);
         if (stockSymbols.length === 0) {
-          // return a promise the resolves to [] as callers are expecting a promise not an empty []
+          // return a promise that resolves to [] as callers are expecting a promise not an empty []
           return $q(function(resolve){
             resolve([]);
           });
