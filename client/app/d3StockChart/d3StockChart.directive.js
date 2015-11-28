@@ -51,28 +51,10 @@ angular.module('publicHtmlApp')
 
           d3.tsv('app/d3StockChart/data.tsv', function (error, data) {
             if (error) throw error;
-
-            color.domain(d3.keys(data[0]).filter(function (key) { return key !== 'date'; }));
-
             data.forEach(function (d) {
               d.date = parseDate(d.date);
             });
-
-            cities      = color.domain().map(function (name) {
-              return {
-                name:   name,
-                values: data.map(function (d) {
-                  return {date: d.date, temperature: +d[name]};
-                })
-              };
-            });
             scope.data = data;
-            x.domain(d3.extent(data, function (d) { return d.date; }));
-
-            y.domain([
-              d3.min(cities, function (c) { return d3.min(c.values, function (v) { return v.temperature; }); }),
-              d3.max(cities, function (c) { return d3.max(c.values, function (v) { return v.temperature; }); })
-            ]);
           });
 
           // Browser onresize event
@@ -93,9 +75,26 @@ angular.module('publicHtmlApp')
 
           scope.render = function () {
             console.log('cities: ' + cities);
-            if (cities === undefined) {
+            if (scope.data === undefined) {
               return;
             }
+            color.domain(d3.keys(scope.data[0]).filter(function (key) { return key !== 'date'; }));
+            cities      = color.domain().map(function (name) {
+              return {
+                name:   name,
+                values: scope.data.map(function (d) {
+                  return {date: d.date, temperature: +d[name]};
+                })
+              };
+            });
+            x.domain(d3.extent(scope.data, function (d) { return d.date; }));
+
+            y.domain([
+              d3.min(cities, function (c) { return d3.min(c.values, function (v) { return v.temperature; }); }),
+              d3.max(cities, function (c) { return d3.max(c.values, function (v) { return v.temperature; }); })
+            ]);
+
+
             // remove all previous items before render
             svg.selectAll('*').remove();
 
