@@ -33,6 +33,11 @@
   fill: none;
   pointer-events: all;
 }
+.focus {
+  background: rgba(0, 0, 0, 1.0);
+  border-radius: 10px;
+  border: solid black 1px;
+}
 .axis path,
 .axis line {
   fill: none;

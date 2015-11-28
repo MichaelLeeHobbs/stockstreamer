@@ -17,21 +17,12 @@ angular.module('publicHtmlApp')
 
           var parseDate = d3.time.format('%Y%m%d').parse;
 
-          var x = d3.time.scale()
-            .range([0, width]);
-
-          var y = d3.scale.linear()
-            .range([height, 0]);
-
+          var x     = d3.time.scale().range([0, width]);
+          var y     = d3.scale.linear().range([height, 0]);
           var color = d3.scale.category10();
 
-          var xAxis = d3.svg.axis()
-            .scale(x)
-            .orient('bottom');
-
-          var yAxis = d3.svg.axis()
-            .scale(y)
-            .orient('left');
+          var xAxis = d3.svg.axis().scale(x).orient('bottom');
+          var yAxis = d3.svg.axis().scale(y).orient('left');
 
           var line = d3.svg.line()
             .interpolate('basis')
@@ -42,13 +33,11 @@ angular.module('publicHtmlApp')
             .append('svg')
             .style('width', '100%');
 
-          var cities;
+          var bisectDate     = d3.bisector(function (d) { return d.date; }).left,
+              formatValue    = d3.format(',.2f'),
+              formatCurrency = function (d) { return '$' + formatValue(d); };
 
-          var bisectDate = d3.bisector(function(d) { return d.date; }).left,
-              formatValue = d3.format(",.2f"),
-              formatCurrency = function(d) { return "$" + formatValue(d); };
-
-
+          // temp function to setup scope.data
           d3.tsv('app/d3StockChart/data.tsv', function (error, data) {
             if (error) throw error;
             data.forEach(function (d) {
@@ -74,12 +63,11 @@ angular.module('publicHtmlApp')
           }, true);
 
           scope.render = function () {
-            console.log('cities: ' + cities);
             if (scope.data === undefined) {
               return;
             }
             color.domain(d3.keys(scope.data[0]).filter(function (key) { return key !== 'date'; }));
-            cities      = color.domain().map(function (name) {
+            var cities = color.domain().map(function (name) {
               return {
                 name:   name,
                 values: scope.data.map(function (d) {
@@ -150,38 +138,80 @@ angular.module('publicHtmlApp')
               .attr('dy', '.35em')
               .text(function (d) { return d.name; });
 
-            var focus = svg.append("g")
-              .attr("class", "focus")
-              .style("display", "none");
+            var focus = svg.append('g')
+              .attr('class', 'focus')
+              .style('display', 'none')
+              .style('pointer-events', 'none');
 
-            focus.append("circle")
-              .attr("r", 4.5);
-
-            focus.append("text")
-              .attr("x", 9)
-              .attr("dy", ".35em");
+            var bisector = svg.select('g').append('line')
+              .attr('class', 'bisector')
+              .style('display', 'none')
+              .style('pointer-events', 'none')
+              .style('stroke-width', 2)
+              .style('stroke', 'red')
+              .style('fill', 'none');
 
             svg.select('g').append('rect')
               .attr('class', 'overlay')
               .attr('width', width)
               .attr('height', height)
-              .on('mouseover', function () { focus.style('display', null); })
-              .on('mouseout', function () { focus.style('display', 'none'); })
+              .on('mouseover', function () {
+                focus.style('display', null);
+                bisector.style('display', null);
+              })
+              .on('mouseout', function () {
+                focus.style('display', 'none');
+                bisector.style('display', 'none');
+              })
               .on('mousemove', mousemove);
 
             function mousemove() {
+              focus.selectAll('*').remove();
+
               var x0 = x.invert(d3.mouse(this)[0]),
                   i  = bisectDate(scope.data, x0, 1),
                   d0 = scope.data[i - 1],
                   d1 = scope.data[i],
                   d  = x0 - d0.date > d1.date - x0 ? d1 : d0;
-              focus.attr('transform', 'translate(' + x(d.date) + ',' + y(d['Austin']) + ')');
-              focus.select('text').text(
-                'Austin: ' + formatCurrency(d['Austin']) +
-                '  San Francisco: ' + formatCurrency(d['San Francisco']) +
-                '  New York: ' + formatCurrency(d['New York'])
 
-              );
+              var date       = d.date.toUTCString().split(' ', 4).join(' ');
+
+              focus.append('circle').attr('r', 4.5);
+              focus.append('text')
+                .attr('x', 9)
+                .attr('dy', '.35em')
+                .text(date);
+              focus.append('text')
+                .attr('x', 9)
+                .attr('dy', '1.35em')
+                .text('Austin: ' + formatCurrency(d['Austin']));
+              focus.append('text')
+                .attr('x', 9)
+                .attr('dy', '2.35em')
+                .text('San Francisco: ' + formatCurrency(d['San Francisco']));
+              focus.append('text')
+                .attr('x', 9)
+                .attr('dy', '3.35em')
+                .text('San Francisco: ' + formatCurrency(d['San Francisco']));
+
+
+              bisector
+                .attr('x1', d3.mouse(this)[0])  //<<== change your code here
+                .attr('y1', 0)
+                .attr('x2', d3.mouse(this)[0])  //<<== and here
+                .attr('y2', height);
+
+
+              console.log(focus.node().getBBox().width);
+              var focusWidth = focus.node().getBBox().width;
+              focus.attr('transform', 'translate(' + (d3.mouse(this)[0] + focusWidth / 2) + ',' + d3.mouse(this)[1] + ')');
+              /*
+               focus.select('text').text(
+               'Austin: ' + formatCurrency(d['Austin']) +
+               '  San Francisco: ' + formatCurrency(d['San Francisco']) +
+               '  New York: ' + formatCurrency(d['New York'])
+
+               );*/
             }
           };
         });
