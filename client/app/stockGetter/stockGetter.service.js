@@ -1,26 +1,28 @@
 'use strict';
 
 angular.module('publicHtmlApp')
-  .service('stockGetter', function ($http, $q) {
+  .service('stockGetter', function ($http) {
     // AngularJS will instantiate a singleton by calling "new" on this function
 
     return {
-      get: function (stockSymbols) {
+      get: function (stockSymbols, callBack) {
         console.log(stockSymbols);
         if (stockSymbols.length === 0) {
-          // return a promise that resolves to [] as callers are expecting a promise not an empty []
-          return $q(function(resolve){
-            resolve([]);
-          });
+          return;
         }
-        return $http({
-          method: 'GET',
-          url: 'http://www.google.com/finance/info?q=NSE:' + stockSymbols.join(','),
-          cache: false
-        })
-          .success(function (data) {
-            return data;
-          });
+
+        stockSymbols.forEach(function (ele) {
+          /*
+          $http({
+            method: 'GET',
+            url:    'https://www.quandl.com/api/v3/datasets/WIKI/' + ele + '.json?api_key=ryj9aeja8R-59_bvByzo',
+            cache:  true
+          })
+            .success(function (data) {
+              callBack(ele, data);
+            });
+            */
+        });
       }
     };
 
