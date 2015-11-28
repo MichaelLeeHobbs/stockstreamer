@@ -66,7 +66,7 @@ angular.module('publicHtmlApp')
                 })
               };
             });
-            scope.tData = data;
+            scope.data = data;
             x.domain(d3.extent(data, function (d) { return d.date; }));
 
             y.domain([
@@ -102,7 +102,7 @@ angular.module('publicHtmlApp')
 
             width = d3.select(element[0]).node().offsetWidth - margin.left - margin.right;
             x     = d3.time.scale().range([0, width]);
-            x.domain(d3.extent(scope.tData, function (d) { return d.date; }));
+            x.domain(d3.extent(scope.data, function (d) { return d.date; }));
             xAxis = d3.svg.axis()
               .scale(x)
               .orient('bottom');
@@ -173,9 +173,9 @@ angular.module('publicHtmlApp')
 
             function mousemove() {
               var x0 = x.invert(d3.mouse(this)[0]),
-                  i  = bisectDate(scope.tData, x0, 1),
-                  d0 = scope.tData[i - 1],
-                  d1 = scope.tData[i],
+                  i  = bisectDate(scope.data, x0, 1),
+                  d0 = scope.data[i - 1],
+                  d1 = scope.data[i],
                   d  = x0 - d0.date > d1.date - x0 ? d1 : d0;
               focus.attr('transform', 'translate(' + x(d.date) + ',' + y(d['Austin']) + ')');
               focus.select('text').text(
