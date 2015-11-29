@@ -12,7 +12,7 @@ Thing.find({}).removeAsync()
       name: 'FB'
     }, {
       name: 'XOM'
-    }, {
+    }, /*{
       name: 'VZ'
     }, {
       name: 'AAPL'
@@ -20,6 +20,6 @@ Thing.find({}).removeAsync()
       name: 'GOOG'
     }, {
       name: 'AMZN'
-    });
+    }*/);
   });
 

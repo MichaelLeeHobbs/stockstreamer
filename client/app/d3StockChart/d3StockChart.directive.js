@@ -5,6 +5,9 @@ angular.module('publicHtmlApp')
     return {
       //template: '<div></div>',
       restrict: 'EA',
+      scope:    {
+        data:    '=',
+      },
       link:     function (scope, element, attrs) {
         //element.text('this is the d3StockChart directive');
 
@@ -27,7 +30,7 @@ angular.module('publicHtmlApp')
           var line = d3.svg.line()
             .interpolate('basis')
             .x(function (d) { return x(d.date); })
-            .y(function (d) { return y(d.temperature); });
+            .y(function (d) { return y(d.close); });
 
           var svg = d3.select(element[0])
             .append('svg')
@@ -43,43 +46,27 @@ angular.module('publicHtmlApp')
             data.forEach(function (d) {
               d.date = parseDate(d.date);
             });
-            scope.data = data;
-          });
 
-          // Browser onresize event
-          window.onresize = function () {
-            scope.$apply();
-          };
-
-          // Watch for resize event
-          scope.$watch(function () {
-            return angular.element($window)[0].innerWidth;
-          }, function () {
-            scope.render(scope.data);
           });
-          // watch for data changes and re-render
-          scope.$watch('data', function (newVals, oldVals) {
-            return scope.render(newVals);
-          }, true);
 
           scope.render = function () {
             if (scope.data === undefined) {
               return;
             }
+
             color.domain(d3.keys(scope.data[0]).filter(function (key) { return key !== 'date'; }));
-            var cities = color.domain().map(function (name) {
+            var stocks = color.domain().map(function (name) {
               return {
                 name:   name,
                 values: scope.data.map(function (d) {
-                  return {date: d.date, temperature: +d[name]};
+                  return {date: d.date, close: +d[name]};
                 })
               };
             });
-            x.domain(d3.extent(scope.data, function (d) { return d.date; }));
 
             y.domain([
-              d3.min(cities, function (c) { return d3.min(c.values, function (v) { return v.temperature; }); }),
-              d3.max(cities, function (c) { return d3.max(c.values, function (v) { return v.temperature; }); })
+              d3.min(stocks, function (c) { return d3.min(c.values, function (v) { return v.close; }); }),
+              d3.max(stocks, function (c) { return d3.max(c.values, function (v) { return v.close; }); })
             ]);
 
 
@@ -88,16 +75,13 @@ angular.module('publicHtmlApp')
 
             width = d3.select(element[0]).node().offsetWidth - margin.left - margin.right;
             x     = d3.time.scale().range([0, width]);
-            x.domain(d3.extent(scope.data, function (d) { return d.date; }));
+
+            x.domain(d3.extent(scope.data, function (ele) {
+              return ele.date;
+            }));
             xAxis = d3.svg.axis()
               .scale(x)
               .orient('bottom');
-
-            console.log('width: ' + width);
-            //height = d3.select(element[0]).node().offsetHeight - margin.top - margin.bottom;
-
-
-            console.log('height: ' + height);
 
             svg.attr('width', width + margin.left + margin.right)
               .attr('height', 500)
@@ -119,21 +103,23 @@ angular.module('publicHtmlApp')
               .attr('y', 6)
               .attr('dy', '.71em')
               .style('text-anchor', 'end')
-              .text('Temperature (ºF)');
+              .text('close (ºF)');
 
             var city = svg.select('g').selectAll('.city')
-              .data(cities)
+              .data(stocks)
               .enter().append('g')
               .attr('class', 'city');
 
             city.append('path')
               .attr('class', 'line')
-              .attr('d', function (d) { return line(d.values); })
+              .attr('d', function (d) {
+                console.log(d);
+                return line(d.values); })
               .style('stroke', function (d) { return color(d.name); });
 
             city.append('text')
               .datum(function (d) { return {name: d.name, value: d.values[d.values.length - 1]}; })
-              .attr('transform', function (d) { return 'translate(' + x(d.value.date) + ',' + y(d.value.temperature) + ')'; })
+              .attr('transform', function (d) { return 'translate(' + x(d.value.date) + ',' + y(d.value.close) + ')'; })
               .attr('x', 3)
               .attr('dy', '.35em')
               .text(function (d) { return d.name; });
@@ -175,24 +161,25 @@ angular.module('publicHtmlApp')
                   d  = x0 - d0.date > d1.date - x0 ? d1 : d0;
 
               var date       = d.date.toUTCString().split(' ', 4).join(' ');
+              var dy         = 0.35;
 
               focus.append('circle').attr('r', 4.5);
               focus.append('text')
                 .attr('x', 9)
-                .attr('dy', '.35em')
+                .attr('dy', dy + 'em')
                 .text(date);
-              focus.append('text')
-                .attr('x', 9)
-                .attr('dy', '1.35em')
-                .text('Austin: ' + formatCurrency(d['Austin']));
-              focus.append('text')
-                .attr('x', 9)
-                .attr('dy', '2.35em')
-                .text('San Francisco: ' + formatCurrency(d['San Francisco']));
-              focus.append('text')
-                .attr('x', 9)
-                .attr('dy', '3.35em')
-                .text('San Francisco: ' + formatCurrency(d['San Francisco']));
+
+              var keys = Object.keys(d);
+
+              keys.forEach(function(key){
+                if (key === 'date') { return; }
+                dy = dy + 1;
+
+                focus.append('text')
+                  .attr('x', 9)
+                  .attr('dy', dy + 'em')
+                  .text(key + ': ' + formatCurrency(d[key]));
+              });
 
               bisector
                 .attr('x1', d3.mouse(this)[0])  //<<== change your code here
@@ -204,8 +191,27 @@ angular.module('publicHtmlApp')
               var focusWidth = focus.node().getBBox().width;
               focus.attr('transform', 'translate(' + (d3.mouse(this)[0] + focusWidth / 2) + ',' + d3.mouse(this)[1] + ')');
             }
+          }; // end of render
+
+
+          // Browser onresize event
+          window.onresize = function () {
+            scope.$apply();
           };
-        });
-      }
-    };
-  });
+
+          // Watch for resize event
+          scope.$watch(function () {
+            return angular.element($window)[0].innerWidth;
+          }, function () {
+            scope.render(scope.data);
+          });
+          // watch for data changes and re-render
+          scope.$watch('data', function (newVals, oldVals) {
+            return scope.render(newVals);
+          }, true);
+
+
+        }); // end of d3Service.d3().then(...{
+      } // end of link
+    }; // end of return
+  }); // end of directive
