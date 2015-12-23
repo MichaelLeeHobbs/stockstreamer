@@ -3,13 +3,11 @@
 angular.module('publicHtmlApp')
   .directive('d3StockChart', function (d3Service, $window) {
     return {
-      //template: '<div></div>',
       restrict: 'EA',
       scope:    {
-        data:    '=',
+        data:    '='
       },
       link:     function (scope, element, attrs) {
-        //element.text('this is the d3StockChart directive');
 
         d3Service.d3().then(function (d3) {
 
@@ -103,21 +101,20 @@ angular.module('publicHtmlApp')
               .attr('y', 6)
               .attr('dy', '.71em')
               .style('text-anchor', 'end')
-              .text('close (ºF)');
+              .text('close');
 
-            var city = svg.select('g').selectAll('.city')
+            var stock = svg.select('g').selectAll('.stock')
               .data(stocks)
               .enter().append('g')
-              .attr('class', 'city');
+              .attr('class', 'stock');
 
-            city.append('path')
+            stock.append('path')
               .attr('class', 'line')
               .attr('d', function (d) {
-                console.log(d);
                 return line(d.values); })
               .style('stroke', function (d) { return color(d.name); });
 
-            city.append('text')
+            stock.append('text')
               .datum(function (d) { return {name: d.name, value: d.values[d.values.length - 1]}; })
               .attr('transform', function (d) { return 'translate(' + x(d.value.date) + ',' + y(d.value.close) + ')'; })
               .attr('x', 3)

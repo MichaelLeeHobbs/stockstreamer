@@ -4,8 +4,8 @@
   function MainController($scope, $http, socket, stockGetter) {
     var self           = this;
     this.awesomeThings = [];
-    this.stocks        = [];
-    this.stockData     = [];
+    //this.stocks        = [];
+    //this.stockData     = [];
     var rawStockData   = [];
     var stockSymboles  = [];
 
@@ -15,6 +15,10 @@
       {name: 'Q', score: 75},
       {name: 'Loser', score: 48}
     ];
+
+    Array.prototype.diff = function(a) {
+      return this.filter(function(i) {return a.indexOf(i) < 0;});
+    };
 
     function getStocks(symbols) {
       stockGetter.get(symbols, newStockData);
@@ -91,23 +95,17 @@
       return self.awesomeThings;
     }), function (newVal, oldVal) {
 
-      // custom array compare as we dont need deep compare
-      var newItems = [];
-      newVal.forEach(function (newEle) {
-        var isNotNew = oldVal.some(function (oldEle) {
-          if (newEle === oldEle) {
-            return true;
-          }
+      if (oldVal) {
+        var oldDiff = oldVal.diff(newVal);
+        oldDiff.forEach(function(ele){
+          deleteStockData(ele.name);
         });
-
-        if (!isNotNew) {
-          newItems.push(newEle.name);
-        }
-      });
-
-      if (getStocks) {
-        // todo restore
-        getStocks(newItems);
+      }
+      if (newVal) {
+        var newDiff = newVal.diff(oldVal);
+        newDiff.forEach(function(ele){
+          getStocks(ele.name);
+        });
       }
     });
 
